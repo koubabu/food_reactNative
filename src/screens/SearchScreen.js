@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import SearchBar from "../components/SearchBar";
 import useResults from "../hooks/useResults";
 import ResultsList from "../components/ResultsList";
-const SearchScreen = () => {
+const SearchScreen = ({ navigation }) => {
     const [term, setTerm] = useState("");
     const [searchApi, errorMessage, results] = useResults();
 
@@ -14,11 +14,21 @@ const SearchScreen = () => {
                 onTermChange={(newTerm) => setTerm(newTerm)}
                 onTermSubmit={() => searchApi(term)}
             />
-            {errorMessage ? <Text>{errorMessage}</Text> : null}
-            {/* <Text>We have found {results.length}</Text> */}
-            <ResultsList results={results} title="cost effective" />
-            {/* <ResultsList results={results} title="Bit Pricer" />
-            <ResultsList results={results} title="Big Spender" /> */}
+            <ScrollView>
+                {errorMessage ? <Text>{errorMessage}</Text> : null}
+                {/* <Text>We have found {results.length}</Text> */}
+                <ResultsList results={results} title="Cost effective" />
+                <ResultsList
+                    navigation={navigation}
+                    results={results}
+                    title="Bit Pricer"
+                />
+                <ResultsList
+                    navigation={navigation}
+                    results={results}
+                    title="Big Spender"
+                />
+            </ScrollView>
         </View>
     );
 
@@ -29,7 +39,7 @@ const SearchScreen = () => {
 const styles = StyleSheet.create({
     background: {
         backgroundColor: "#fff",
-        flex: 1,
+        flex: 1, //it will take as much space as possible
     },
 });
 
