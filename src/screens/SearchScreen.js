@@ -1,36 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import SearchBar from "../components/SearchBar";
-import zomato from "../api/zomato";
-import { TextInput } from "react-native-gesture-handler";
-import axios from "axios";
+import useResults from "../hooks/useResults";
+import ResultsList from "../components/ResultsList";
 const SearchScreen = () => {
     const [term, setTerm] = useState("");
-    const [results, setResults] = useState([]);
-    const [errorMessage, setErrorMessage] = useState("");
-
-    const searchApi = (searchTerm) => {
-        zomato
-            .get("/search", {
-                params: {
-                    lat: "22.572646",
-                    lon: "88.363895",
-                    q: searchTerm,
-                },
-            })
-            .then((response) => {
-                // console.log(response.data.restaurants);
-                setResults(JSON.stringify(response.data.results_found));
-                // setResults(JSON.stringify(response.data));
-            })
-            .catch((error) => {
-                setErrorMessage("Something Went Wrong!!");
-                console.log(error);
-            });
-    };
-    //call searchAPI when first running the app
-    //BAD CODE!!
-    // searchApi("");
+    const [searchApi, errorMessage, results] = useResults();
 
     return (
         <View style={styles.background}>
@@ -40,9 +15,15 @@ const SearchScreen = () => {
                 onTermSubmit={() => searchApi(term)}
             />
             {errorMessage ? <Text>{errorMessage}</Text> : null}
-            <Text>We have found {results}</Text>
+            {/* <Text>We have found {results.length}</Text> */}
+            <ResultsList results={results} title="cost effective" />
+            {/* <ResultsList results={results} title="Bit Pricer" />
+            <ResultsList results={results} title="Big Spender" /> */}
         </View>
     );
+
+    // searchApi errorMessage results  these 3
+    // things are needed in our search screen from hook
 };
 
 const styles = StyleSheet.create({
